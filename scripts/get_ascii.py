@@ -47,7 +47,6 @@ def image_to_ascii(image, width=100, ascii_chars=' .:-=+*#%@'):
     ascii_img = np.array(list(ascii_chars))[indices]
     ascii_lines = [''.join(row) for row in ascii_img]
     ascii_lines = remove_space_only_lines(ascii_lines)
-    # print(ascii_lines[0])    
     
     for index, line in enumerate(ascii_lines):
         ascii_lines[index] = line[11:85]

@@ -5,5 +5,3 @@ torch
 fastapi
 python-multipart
 uvicorn
-starlette-exporter
-prometheus-client

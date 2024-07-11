@@ -2,12 +2,12 @@ from fastapi import FastAPI, File, UploadFile, Request
 from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from transformers import AutoImageProcessor, ViTForImageClassification
-import torch
-from PIL import Image
-import io
-from contextlib import contextmanager
 from fastapi.middleware.cors import CORSMiddleware
+from PIL import Image
 from collections import deque
+from contextlib import contextmanager
+import torch
+import os, json, io
 
 app = FastAPI()
 image_processor = AutoImageProcessor.from_pretrained("google/vit-base-patch16-224")
@@ -16,11 +16,7 @@ from datetime import datetime, timedelta
 import time
 
 allowed_origins = [
-    # "*",
-    # "http://localhost",
-    # "http://localhost:8000",
-    # "http://127.0.0.1",
-    # "http://127.0.0.1:8000",
+    "http://localhost:8000",
     "https://isitbanana.com"
 ]
 
@@ -31,7 +27,6 @@ app.add_middleware(
     allow_methods=["*"],  
     allow_headers=["*"],  
 )
-import os, json
 
 METRICS_FILE = "metrics.json"
 MAX_REQUESTS = 1000000  # Store last million requests
@@ -109,10 +104,8 @@ async def upload_image(file: UploadFile = File(...)):
 
         predicted_label = logits.argmax(-1).item()
         image_type = model.config.id2label[predicted_label]
-        # You can perform more operations with PIL here
-        return JSONResponse(content={
-        "type":image_type
-        })
+        return JSONResponse(content={"type":image_type}
+                            )
     except Exception as e:
         # Return an error response
         return JSONResponse(
@@ -314,7 +307,6 @@ async def get_metrics():
     """
     return HTMLResponse(content=html_content)
 
-# uncomment to start locally with python main.py
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
