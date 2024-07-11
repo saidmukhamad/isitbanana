@@ -92,6 +92,7 @@ def parse_dir():
 
     # Optionally, also save as a JavaScript file
     js_content = f"const asciiArt = {json.dumps(ascii_array, indent=2)};"
+    
     with open('ascii_art.js', 'w') as f:
         f.write(js_content)
 

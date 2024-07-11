@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rotating ASCII Art Animation with Color Change</title>
     <style>
       body {
         background-color: #000;
@@ -14,15 +13,15 @@
         height: 100vh;
         margin: 0;
         font-family: monospace;
+        color: #fff;
       }
       #ascii-container {
-        color: #0f0;
         font-size: 8px;
         line-height: 1;
         white-space: pre;
         transform-origin: center;
-        /* animation: rotate 10s linear infinite; */
         transition: color 0.5s ease;
+        height: 300px;
       }
       @keyframes rotate {
         from {
@@ -32,18 +31,83 @@
           transform: rotate(360deg);
         }
       }
-      #color-change-btn {
+      #message {
+        font-size: 24px;
         margin-top: 20px;
-        padding: 10px 20px;
-        font-size: 16px;
+        font-weight: bold;
+      }
+      @keyframes glitch {
+        0% {
+          transform: translate(0);
+        }
+        20% {
+          transform: translate(-5px, 5px);
+        }
+        40% {
+          transform: translate(-5px, -5px);
+        }
+        60% {
+          transform: translate(5px, 5px);
+        }
+        80% {
+          transform: translate(5px, -5px);
+        }
+        100% {
+          transform: translate(0);
+        }
+      }
+      #message {
+        font-size: 24px;
+        margin-top: 20px;
+        font-weight: bold;
+        height: 30px;
+      }
+      #cursor {
+        animation: blink 0.7s infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+      #drop-area {
+        border: 2px dashed #ccc;
+        border-radius: 20px;
+        width: 70%;
+        padding: 20px;
+        text-align: center;
+        margin: 20px 0;
+      }
+      #drop-area.highlight {
+        border-color: #0f0;
+      }
+      #file-input {
+        display: none;
+      }
+      #upload-label {
         cursor: pointer;
+        background-color: #0f0;
+        color: #000;
+        padding: 10px 20px;
+        border-radius: 5px;
+        display: inline-block;
       }
     </style>
   </head>
-
   <body>
     <div id="ascii-container"></div>
-    <button id="color-change-btn">Change Color</button>
+    <div id="message" class="glitch"></div>
+    <div id="drop-area">
+      <form>
+        <p>Drop banana</p>
+        <input type="file" id="file-input" accept="image/*" />
+        <label for="file-input" id="upload-label">check</label>
+      </form>
+    </div>
 
     <script>
       const asciiArt = [
@@ -81,24 +145,92 @@
       ];
 
       const container = document.getElementById("ascii-container");
-      const colorChangeBtn = document.getElementById("color-change-btn");
+      const dropArea = document.getElementById("drop-area");
+      const fileInput = document.getElementById("file-input");
       let currentFrame = 0;
       let currentColorIndex = 0;
       const colors = ["#0f0", "#f00", "#fff"]; // green, red, white
+      const messageElement = document.getElementById("message");
+      let isBanana = false;
+      function resetState() {
+        isBanana = false;
+        updateColor();
+      }
 
       function updateFrame() {
         container.textContent = asciiArt[currentFrame];
         currentFrame = (currentFrame + 1) % asciiArt.length;
       }
 
-      function changeColor() {
-        currentColorIndex = (currentColorIndex + 1) % colors.length;
-        container.style.color = colors[currentColorIndex];
+      function updateColor() {
+        container.style.color = isBanana ? "#0f0" : "#f00";
+        messageElement.textContent = isBanana ? "THAT'S BANANA" : "NOT A BANANA";
       }
 
-      colorChangeBtn.addEventListener("click", changeColor);
-
       setInterval(updateFrame, 100); // Change frame every 100ms
+
+      // Prevent default drag behaviors
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+        dropArea.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+      });
+
+      ["dragenter", "dragover"].forEach((eventName) => {
+        dropArea.addEventListener(eventName, highlight, false);
+      });
+
+      ["dragleave", "drop"].forEach((eventName) => {
+        dropArea.addEventListener(eventName, unhighlight, false);
+      });
+
+      dropArea.addEventListener("drop", handleDrop, false);
+
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      function highlight(e) {
+        dropArea.classList.add("highlight");
+      }
+
+      function unhighlight(e) {
+        dropArea.classList.remove("highlight");
+      }
+
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles(files);
+      }
+
+      fileInput.addEventListener("change", function (e) {
+        handleFiles(this.files);
+      });
+
+      function handleFiles(files) {
+        [...files].forEach(uploadFile);
+      }
+
+      function uploadFile(file) {
+        const url = "http://localhost:8000/upload-image/";
+        const formData = new FormData();
+        formData.append("file", file);
+
+        fetch(url, { method: "POST", body: formData })
+          .then((response) => response.json())
+          .then((data) => {
+            isBanana = data.type === "banana";
+            updateColor();
+            setInterval(resetState, 5000); // Reset state every 5 seconds
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            isBanana = false;
+            updateColor();
+            setInterval(resetState, 5000); // Reset state every 5 seconds
+          });
+      }
     </script>
   </body>
 </html>
