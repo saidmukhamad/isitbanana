@@ -16,13 +16,16 @@
         color: #fff;
       }
       #ascii-container {
-        font-size: 8px;
+        position: fixed;
+        top: 25%;
+        font-size: 7px;
         line-height: 1;
         white-space: pre;
         transform-origin: center;
         transition: color 0.5s ease;
-        height: 300px;
+        animation: rotate 10s linear infinite;
       }
+
       @keyframes rotate {
         from {
           transform: rotate(0deg);
@@ -31,34 +34,9 @@
           transform: rotate(360deg);
         }
       }
+
       #message {
         font-size: 24px;
-        margin-top: 20px;
-        font-weight: bold;
-      }
-      @keyframes glitch {
-        0% {
-          transform: translate(0);
-        }
-        20% {
-          transform: translate(-5px, 5px);
-        }
-        40% {
-          transform: translate(-5px, -5px);
-        }
-        60% {
-          transform: translate(5px, 5px);
-        }
-        80% {
-          transform: translate(5px, -5px);
-        }
-        100% {
-          transform: translate(0);
-        }
-      }
-      #message {
-        font-size: 24px;
-        margin-top: 20px;
         font-weight: bold;
         height: 30px;
       }
@@ -83,14 +61,14 @@
         margin: 20px 0;
       }
       #drop-area.highlight {
-        border-color: #0f0;
+        border-color: #f2fc2b;
       }
       #file-input {
         display: none;
       }
       #upload-label {
         cursor: pointer;
-        background-color: #0f0;
+        background-color: #f2fc2b;
         color: #000;
         padding: 10px 20px;
         border-radius: 5px;
@@ -111,7 +89,6 @@
 
     <script>
       const asciiArt = [
-        // "                                                                          \n   ###*-                                                                  \n  =#%%%#**                                                                \n  **##%%%#***+++=-                                                        \n     -*##%######***+++=:                                                  \n        =*###%%%%%%%##**++=-                                              \n         =*##%%%%%%%%%%%##**+++==                         .==++++******=  \n          =+#%%%%%%%%%%%%%%%###***+++++====-=======++++++****###%%%%###** \n           -+*#%%%%%%%%%%%%%%%%%%%%####*************####%%%%%%%%%%%%###*+ \n             =+*#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#*=  \n               =++*#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#*+=   \n                 :=++**##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#*++=     \n                     ==+++**###%%%%%%%%%%%%%%%%%%%%%%%%%%%###**++=        \n                          ==++++*****###############*****++++=-           \n                                :====+++++++++++++++====                  \n                                                                          ",
         "                                                                          \n  ##*                                                                     \n*#%%##*+                                                                  \n**##%%%##**++==-                                                          \n   +*##%%#####***+++=:                                                    \n      +*####%%%%%###**++==                                                \n       =*##%%%%%%%%%%%##**+++==                            -==++++****+   \n        =+##%%%%%%%%%%%%%%###**++++++===-.     .:-===+++++****###%%####*+ \n         -+*#%%%%%%%%%%%%%%%%%%%%###*****************####%%%%%%%%%%%###*+ \n           =+*#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#*+  \n             =++*#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#*+=   \n               -=++*##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#**+=     \n                   =+++**###%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##**+++=       \n                       -=+++++***########%%%%%%#######****+++==           \n                             :===+++++++++++++++++++++===-                \n                                                                          ",
         "                                                                          \n    **+                                                                   \n   *#%##*=                                                                \n   *##%%%#**++==                                                          \n     +*##%%###****++==:                                                   \n        **###%%%%%%##**++==                                               \n         :*##%%%%%%%%%%##**+++=-                           :==++++***+    \n          =+#%%%%%%%%%%%%%%%##***++++===-:      :-===+++++****########**  \n            +*#%%%%%%%%%%%%%%%%%%%###****************####%%%%%%%%%%%##*+  \n             =+*#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#*+   \n               =++*#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#*+=    \n                 :=++**##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#**+=      \n                     ==+++**###%%%%%%%%%%%%%%%%%%%%%%%%%%%##**++=:        \n                          ==++++******#############*****++++==            \n                                 =====+++++++++++++===-:                  \n                                                                          ",
         "                                                                          \n    **+                                                                   \n   *#%##*=                                                                \n   *##%%%#**++==                                                          \n     +*##%%###****++==:                                                   \n        **###%%%%%%##**++==                                               \n         :*##%%%%%%%%%%##**+++=-                           :==++++***+    \n          =+#%%%%%%%%%%%%%%%##***++++===-:      :-===+++++****########**  \n            +*#%%%%%%%%%%%%%%%%%%%###****************####%%%%%%%%%%%##*+  \n             =+*#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#*+   \n               =++*#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#*+=    \n                 :=++**##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#**+=      \n                     ==+++**###%%%%%%%%%%%%%%%%%%%%%%%%%%%##**++=:        \n                          ==++++******#############*****++++==            \n                                 =====+++++++++++++===-:                  \n                                                                          ",
@@ -142,18 +119,20 @@
         "                                                                          \n                   ****                                                   \n                  **##*+                                                  \n                  **###*+                                                 \n                    +*##****+                                             \n                     +*#%###***+                                          \n                     *##%%####**++                                        \n                     *###%%####***++                                      \n                     **#########***+++                                    \n                     ****#######*****++++                                 \n                      +***#######******+++++=====+++++++                  \n                       ++****####**********++++++******+*                 \n                        +++***************************+++                 \n                          +++*************************+++                 \n                            +++++*********************++                  \n                              =++++++++************++++                   \n                                  ==++++++++++++++++=                     \n                                         ======                           \n                                                                          ",
         "                                                                          \n            ++                                                            \n          ***#*=                                                          \n          **#%#**                                                         \n           +**#%###***+                                                   \n             +**#%%####***+                                               \n               *##%%%%####****                                            \n               +*##%%%%#####****=                                         \n               ++*###%%%%######****+                                      \n                ++**##%%%%########****++                -====             \n                 ++***###%############*****+++++++++++++++****++          \n                  +++****####################*******########***+=         \n                    ++++****################################***++         \n                      =++++****#############################***+          \n                         -=++++*****#######################***+           \n                             ==++++++******############****++             \n                                  ==++++++++++++++++++++=:                \n                                            ====--                        \n                                                                          ",
         "                                                                          \n       +**                                                                \n      +*%##*                                                              \n      +*#%%##**+                                                          \n        +*#%%#####***+                                                    \n          =*#%%%%%%####***                                                \n           =+##%%%%%%%####***=                                            \n            +**#%%%%%%%######***+=                                        \n             ++*##%%%%%%%%#######****++=:              -==+++++***+       \n              =+**##%%%%%%%%###########*******++++++*******######****     \n                ++***##%%%%%%%%%##################################**+     \n                 :+++***###%%%%%%%%%%#############################***     \n                    =++++**####%%%%%%%%%%%%%%%%%#################*+       \n                       =+++++***######%%%%%%%%%%%%%%%%%#######**+=        \n                            ++++++++*****##############****+++=           \n                                  =+++++++++++++++++++++==-               \n                                                                          ",
+        "                                                                          \n    **+                                                                   \n   *#%##*-                                                                \n   *##%%%#***++-                                                          \n     +*##%#####****++=                                                    \n        +*####%%%%%##***+=-                                               \n         -+##%%%%%%%%%%%##**++==                           :=+++*****+    \n          =+*#%%%%%%%%%%%%%%##*****+++==--. :: :--==++++****##########**  \n           :+*##%%%%%%%%%%%%%%%%%%%####************#####%%%%%%%%%%%###*+  \n             =+*##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#*+   \n               +++*##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#*++    \n                 =++++*###%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##**++      \n                     =++++***####%%%%%%%%%%%%%%%%%%%%%%%###***+++-        \n                         -=+++++++*******#######*******+++++==            \n                                 ====+++++++++++++++===                   \n                                                                          ",
       ];
-
       const container = document.getElementById("ascii-container");
       const dropArea = document.getElementById("drop-area");
       const fileInput = document.getElementById("file-input");
       let currentFrame = 0;
       let currentColorIndex = 0;
-      const colors = ["#0f0", "#f00", "#fff"]; // green, red, white
+      const colors = ["#f2fc2b", "#f00", "#fff"]; // green, red, white
       const messageElement = document.getElementById("message");
-      let isBanana = false;
+      //   yes | no | idle | error
+      let isBanana = "idle";
+
       function resetState() {
-        isBanana = false;
+        isBanana = "idle";
         updateColor();
       }
 
@@ -162,12 +141,62 @@
         currentFrame = (currentFrame + 1) % asciiArt.length;
       }
 
-      function updateColor() {
-        container.style.color = isBanana ? "#0f0" : "#f00";
-        messageElement.textContent = isBanana ? "THAT'S BANANA" : "NOT A BANANA";
+      function typeMessage(message, color) {
+        messageElement.style.color = color;
+        messageElement.textContent = "";
+        let i = 0;
+        function typeChar() {
+          if (i < message.length) {
+            messageElement.textContent += message.charAt(i);
+            i++;
+            setTimeout(typeChar, 100);
+          } else {
+            messageElement.innerHTML += '<span id="cursor">|</span>';
+          }
+        }
+
+        if (message == "") {
+          console.log(message);
+          messageElement.innerHTML = '<span id="cursor">|</span>';
+        } else typeChar();
       }
 
-      setInterval(updateFrame, 100); // Change frame every 100ms
+      function getBananaColor(color) {
+        switch (color) {
+          case "yes":
+            return "#f2fc2b";
+          case "no":
+          case "error":
+            return "#f00";
+          case "idle":
+            return "#fff";
+          default:
+            return "#fff";
+        }
+      }
+      function getBananaMessage(color) {
+        console.log(color, "get messafge");
+        switch (color) {
+          case "yes":
+            return "THAT'S BANANA";
+          case "no":
+            return "THAT'S NOT BANANA";
+          case "error":
+            return "Error happened";
+          case "idle":
+            return "Drop banana";
+          default:
+            return "Drop banana";
+        }
+      }
+      function updateColor() {
+        container.style.color = getBananaColor(isBanana);
+        const message = getBananaMessage(isBanana);
+        const color = getBananaColor(isBanana);
+        typeMessage(message, color);
+      }
+
+      setInterval(updateFrame, 120); // Change frame every 100ms
 
       // Prevent default drag behaviors
       ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
@@ -182,7 +211,7 @@
       ["dragleave", "drop"].forEach((eventName) => {
         dropArea.addEventListener(eventName, unhighlight, false);
       });
-
+      updateColor();
       dropArea.addEventListener("drop", handleDrop, false);
 
       function preventDefaults(e) {
@@ -212,23 +241,33 @@
         [...files].forEach(uploadFile);
       }
 
+      console.log(window.location);
       function uploadFile(file) {
-        const url = "http://localhost:8000/upload-image/";
+        const url = "https://api.isitbanana.com/upload-image/";
+
+        function getApiUrl() {
+          if (window.location.protocol == "file:") {
+            return "http://localhost:8000";
+          } else {
+            return "https://api.isitbanana.com";
+          }
+        }
+
         const formData = new FormData();
         formData.append("file", file);
 
-        fetch(url, { method: "POST", body: formData })
+        fetch(getApiUrl(), { method: "POST", body: formData })
           .then((response) => response.json())
           .then((data) => {
-            isBanana = data.type === "banana";
+            isBanana = data.type === "banana" ? "yes" : "no";
             updateColor();
-            setInterval(resetState, 5000); // Reset state every 5 seconds
+            setTimeout(resetState, 5000); // Reset state every 5 seconds
           })
           .catch((error) => {
             console.error("Error:", error);
-            isBanana = false;
+            isBanana = "error";
             updateColor();
-            setInterval(resetState, 5000); // Reset state every 5 seconds
+            setTimeout(resetState, 5000); // Reset state every 5 seconds
           });
       }
     </script>
