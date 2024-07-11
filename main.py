@@ -16,6 +16,7 @@ from datetime import datetime, timedelta
 import time
 
 allowed_origins = [
+    "*",
     "http://localhost:8000",
     "https://isitbanana.com"
 ]
